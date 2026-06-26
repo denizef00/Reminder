@@ -13,17 +13,44 @@ class ListCardview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 520,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSecondary,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: _listCardWidget(context, event: name, date: date, time: time),
-      ),
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        Container(
+          height: 100,
+          width: 520,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: _listCardWidget(
+              context,
+              event: name,
+              date: date,
+              time: time,
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.check_circle_outline_rounded),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              iconSize: 30,
+            ),
+            SizedBox(height: 10),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.delete_outline),
+              color: Theme.of(context).colorScheme.error,
+              iconSize: 30,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -53,30 +80,29 @@ class ListCardview extends StatelessWidget {
       children: [
         SizedBox(width: 27),
         Text(
-          "Date: ",
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
-        SizedBox(width: 10),
-        Text(
           date,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.tertiary,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: 25),
+        SizedBox(width: 10),
         Text(
-          "Time: ",
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          " • ",
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
         SizedBox(width: 10),
+
         Text(
           time,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.tertiary,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -87,11 +113,6 @@ class ListCardview extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 27),
-        Text(
-          "Event Name:",
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
-        SizedBox(width: 10),
         Text(
           event,
           style: TextStyle(
