@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reminder/models/event_model.dart';
+import 'package:reminder/providers/event_provider.dart';
 
-class AddView extends StatelessWidget {
+class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
+
+  ConsumerState<AddView> createState() => _AddViewState();
+}
+
+class _AddViewState extends ConsumerState<AddView> {
+  final TextEditingController _textController = TextEditingController();
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 114),
@@ -18,7 +33,8 @@ class AddView extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),
                 child: TextField(
-                  maxLines: 15,
+                  controller: _textController,
+                  maxLines: 10,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.tertiary,
                     fontSize: 20,
@@ -30,15 +46,13 @@ class AddView extends StatelessWidget {
                     ),
                     border: OutlineInputBorder(borderSide: BorderSide.none),
 
-                    hint: Text(
-                      "There's a meeting tomorrow at 8:40.",
-                      style: TextStyle(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.tertiary.withOpacity(0.5),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                      ),
+                    hintText: "There's a meeting tomorrow at 8:40.",
+                    hintStyle: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary.withOpacity(0.5),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
                 ),
@@ -57,11 +71,30 @@ class AddView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
-                    EventModel eventnew = EventModel(
-                      title: 'title',
-                      date: '26/05',
-                      time: '18.00',
-                    );
+                    print("BUTONA BASTIN");
+                    final enteredText = _textController.text.trim();
+                    ref
+                        .read(eventListProvider.notifier)
+                        .addEvent(
+                          enteredText,
+                          'Gemini will analyze',
+                          '30.06.2026',
+                          '8:40',
+                        );
+
+                    _textController.clear();
+
+                    if (context.mounted) {
+                      //Navigator.of(context, rootNavigator: true).pop();
+                      context.pop();
+                    } else {
+                      print("HATA");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please write something!"),
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     "ADD EVENT",

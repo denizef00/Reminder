@@ -4,7 +4,7 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData get lightTheme => ThemeData(
-    fontFamily: "Inter",
+    //fontFamily: "Inter",
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF4F46E5), // Indigo / NavigatorBar ve Ana Buton rengi
       secondary: Color(

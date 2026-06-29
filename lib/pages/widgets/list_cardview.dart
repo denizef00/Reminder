@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 
 class ListCardview extends StatelessWidget {
   final String name;
+  final String description;
   final String date;
   final String time;
+  final bool isCompleted;
+  final VoidCallback onCheckPressed;
+  final VoidCallback onDeletePressed;
+
   const ListCardview({
     super.key,
     required this.name,
+    required this.description,
     required this.date,
     required this.time,
+    required this.isCompleted,
+    required this.onCheckPressed,
+    required this.onDeletePressed,
   });
 
   @override
