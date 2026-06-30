@@ -27,11 +27,18 @@ class EventList extends _$EventList {
   }
 
   void toggleCheck(String id) {
-    state = state.map((event) {
-      if (event.id == id) {
-        return event.copyWith(isCompleted: !event.isCompleted);
+    final List<EventModel> tempList = List.from(state);
+
+    for (int i = 0; i < tempList.length; i++) {
+      if (tempList[i].id == id) {
+        if (tempList[i].isCompleted) {
+          tempList[i] = tempList[i].copyWith(isCompleted: false);
+        } else {
+          tempList[i] = tempList[i].copyWith(isCompleted: true);
+        }
+        break;
       }
-      return event;
-    }).toList();
+    }
+    state = tempList;
   }
 }

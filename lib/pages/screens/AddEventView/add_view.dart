@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reminder/models/event_model.dart';
 import 'package:reminder/providers/event_provider.dart';
 
 class AddView extends ConsumerStatefulWidget {
@@ -73,25 +72,34 @@ class _AddViewState extends ConsumerState<AddView> {
                   onPressed: () async {
                     print("BUTONA BASTIN");
                     final enteredText = _textController.text.trim();
-                    ref
-                        .read(eventListProvider.notifier)
-                        .addEvent(
-                          enteredText,
-                          'Gemini will analyze',
-                          '30.06.2026',
-                          '8:40',
-                        );
 
-                    _textController.clear();
+                    if (enteredText.isNotEmpty) {
+                      ref
+                          .read(eventListProvider.notifier)
+                          .addEvent(
+                            enteredText,
+                            'Gemini will analyze',
+                            '30.06.2026',
+                            '8:40',
+                          );
 
-                    if (context.mounted) {
-                      //Navigator.of(context, rootNavigator: true).pop();
-                      context.pop();
+                      _textController.clear();
+
+                      if (context.mounted) {
+                        //Navigator.of(context, rootNavigator: true).pop();
+                        context.pop();
+                      }
                     } else {
                       print("HATA");
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text("Please write something!"),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       );
                     }

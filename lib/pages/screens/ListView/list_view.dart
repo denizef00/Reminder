@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/pages/widgets/list_cardview.dart';
@@ -40,6 +38,11 @@ class ListPage extends ConsumerWidget {
                           ref
                               .read(eventListProvider.notifier)
                               .toggleCheck(event.id);
+                          final guncel = ref
+                              .read(eventListProvider)
+                              .firstWhere((e) => e.id == event.id);
+
+                          print(guncel.isCompleted);
                         },
                         onDeletePressed: () {
                           ref

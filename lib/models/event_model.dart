@@ -8,12 +8,12 @@ class EventModel {
 
   EventModel({
     required this.id,
-    required this.title, 
+    required this.title,
     required this.description,
-    required this.date, 
+    required this.date,
     required this.time,
     this.isCompleted = false,
-    });
+  });
 
   EventModel copyWith({
     String? id,
@@ -22,12 +22,14 @@ class EventModel {
     String? date,
     String? time,
     bool? isCompleted,
-  }){
-    return EventModel(id:  id ?? this.id , 
-    title: title ?? this.title,
-    description:description ?? this.description, 
-    date: date ?? this.date, 
-    time: time ?? this.time
+  }) {
+    return EventModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      isCompleted: isCompleted ?? this.isCompleted,
     );
   }
 }

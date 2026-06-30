@@ -15,7 +15,7 @@ class ListCardview extends StatelessWidget {
     required this.description,
     required this.date,
     required this.time,
-    required this.isCompleted,
+    this.isCompleted = false,
     required this.onCheckPressed,
     required this.onDeletePressed,
   });
@@ -34,31 +34,50 @@ class ListCardview extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: _listCardWidget(
-              context,
-              event: name,
-              date: date,
-              time: time,
-            ),
+            child: !isCompleted
+                ? _listCardWidget(context, event: name, date: date, time: time)
+                : _completeCardWidget(
+                    context,
+                    event: name,
+                    date: date,
+                    time: time,
+                  ),
           ),
         ),
         Column(
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: onCheckPressed,
               icon: const Icon(Icons.check_circle_outline_rounded),
               color: Theme.of(context).colorScheme.onPrimaryContainer,
               iconSize: 30,
             ),
             SizedBox(height: 10),
             IconButton(
-              onPressed: () {},
+              onPressed: onDeletePressed,
               icon: Icon(Icons.delete_outline),
               color: Theme.of(context).colorScheme.error,
               iconSize: 30,
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Column _completeCardWidget(
+    BuildContext context, {
+    required String event,
+    required String date,
+    required String time,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10),
+        _completeNameWidget(context, event: event),
+        SizedBox(height: 15),
+        _completeTimeWidget(context, date: date, time: time),
       ],
     );
   }
@@ -128,6 +147,68 @@ class ListCardview extends StatelessWidget {
             color: Theme.of(context).colorScheme.tertiary,
             fontSize: 16,
             fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _completeNameWidget(BuildContext context, {required String event}) {
+    return Row(
+      children: [
+        SizedBox(width: 27),
+        Text(
+          name,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(
+              context,
+            ).colorScheme.tertiary.withOpacity(0.4), // %40 görünürlük (soluk)
+
+            decoration: TextDecoration.lineThrough,
+
+            decorationColor: Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.5), // Çizgi rengi
+            decorationThickness: 2.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  _completeTimeWidget(
+    BuildContext context, {
+    required String date,
+    required String time,
+  }) {
+    return Row(
+      children: [
+        SizedBox(width: 27),
+        Text(
+          date,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.3),
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          " • ",
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.3),
+          ),
+        ),
+        SizedBox(width: 10),
+
+        Text(
+          time,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.3),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

@@ -1,14 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reminder/providers/theme_provider.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   const MainScreen({super.key, required this.navigationShell});
 
+  void _showSettings(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (context) {
+        // Güncel tema durumunu kontrol ediyoruz
+        final themeMode = ref.watch(themeProvider);
+        final isDark = themeMode == ThemeMode.dark;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 30,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 30,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "SETTINGS",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Divider(),
+              const SizedBox(height: 15),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        isDark ? Icons.dark_mode : Icons.light_mode,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        "Dark Theme",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Switch(
+                    value: isDark,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onChanged: (value) {
+                      ref.read(themeProvider.notifier).toggleTheme();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: _appBarView(),
+      appBar: _appBarView(context, ref),
       body: navigationShell,
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
@@ -70,13 +143,20 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  AppBar _appBarView() {
+  AppBar _appBarView(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: Text(
         "Reminder",
         style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
       ),
-      actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.settings))],
+      actions: [
+        IconButton(
+          onPressed: () {
+            _showSettings(context, ref);
+          },
+          icon: const Icon(Icons.settings),
+        ),
+      ],
     );
   }
 }
