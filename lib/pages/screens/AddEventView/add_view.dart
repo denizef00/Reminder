@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:reminder/providers/event_provider.dart';
 
 class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
 
+  @override
   ConsumerState<AddView> createState() => _AddViewState();
 }
 
@@ -19,7 +21,7 @@ class _AddViewState extends ConsumerState<AddView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 114),
@@ -70,35 +72,19 @@ class _AddViewState extends ConsumerState<AddView> {
                   ),
                   onPressed: () async {
                     print("BUTONA BASTIN");
+                    final fullTime = DateTime.now();
+                    final dateNow = DateFormat("dd/MM/yyyy").format(fullTime);
+                    final timeNow = DateFormat("HH:mm").format(fullTime);
                     final allText = _textController.text.trim();
-                    _infoCard(
-                      context,
-                      name: allText,
-                      desciptiom: 'Gemini Analyze Here',
-                      date: '01.07.2026',
-                      time: '23:59',
-                    );
-
-                    /*
-                    
-                    final enteredText = _textController.text.trim();
-
-                    if (enteredText.isNotEmpty) {
-                      ref
-                          .read(eventListProvider.notifier)
-                          .addEvent(
-                            enteredText,
-                            'Gemini will analyze',
-                            '30.06.2026',
-                            '8:40',
-                          );
-
+                    if (allText.isNotEmpty) {
+                      _infoCard(
+                        context,
+                        name: allText,
+                        desciptiom: 'Gemini Analyze Here',
+                        date: dateNow,
+                        time: timeNow,
+                      );
                       _textController.clear();
-
-                      if (context.mounted) {
-                        //Navigator.of(context, rootNavigator: true).pop();
-                        context.pop();
-                      }
                     } else {
                       print("HATA");
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +98,7 @@ class _AddViewState extends ConsumerState<AddView> {
                           ),
                         ),
                       );
-                    }*/
+                    }
                   },
                   child: const Text(
                     "ADD EVENT",
@@ -137,29 +123,28 @@ class _AddViewState extends ConsumerState<AddView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(24),
-          ),
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 15),
+          backgroundColor: Colors.transparent,
           elevation: 8,
-          backgroundColor: Colors.white,
-          child: Container(
+          content: Container(
             padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: Theme.of(context).colorScheme.onSecondary,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: Colors.black, width: 1),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Event Preview",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 SizedBox(height: 24),
@@ -176,7 +161,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w200,
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -185,7 +170,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.tertiary,
                             ),
                           ),
                         ],
@@ -198,7 +183,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w200,
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -207,7 +192,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.tertiary,
                             ),
                           ),
                         ],
@@ -220,7 +205,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w200,
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -229,26 +214,20 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.tertiary,
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            ' • ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w200,
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                          ),
-                          SizedBox(width: 10),
-
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        children: [
                           Text(
                             "Event Time : ",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w200,
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -257,7 +236,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.tertiary,
                             ),
                           ),
                         ],
@@ -267,69 +246,106 @@ class _AddViewState extends ConsumerState<AddView> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    24,
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  minimumSize: Size(50, 50),
+
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      24,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 50,
-                                  vertical: 10,
-                                ),
-                                child: Text(
-                                  "Edit",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w800,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.edit_note_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 2),
+                                      Text(
+                                        "Edit",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                             SizedBox(width: 10),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    24,
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  minimumSize: Size(50, 50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      24,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                ref
-                                    .read(eventListProvider.notifier)
-                                    .addEvent(name, desciptiom, date, time);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Event succesfully editted in your list',
-                                    ), //BURAYI ADD EVENTTEKI GIBI SNACK BAR YAP
+                                onPressed: () {
+                                  ref
+                                      .read(eventListProvider.notifier)
+                                      .addEvent(name, desciptiom, date, time);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Event succesfully editted in your list!!',
+                                      ),
+                                      backgroundColor: Colors.redAccent,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: Duration(seconds: 2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
                                   ),
-                                );
-                                Navigator.pop(context);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 10,
-                                ),
-                                child: Text(
-                                  "Accept",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w800,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 2),
+                                      Text(
+                                        "Accept",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

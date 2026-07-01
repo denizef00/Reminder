@@ -16,7 +16,7 @@ class ListPage extends ConsumerWidget {
           child: eventList.isEmpty
               ? const Center(
                   child: Text(
-                    "No events have been added yet.\nYou can add them from the main screen!",
+                    "No events have been added yet.\nYou can add them from the 'Add Event' screen!",
                     textAlign: TextAlign.center,
                   ),
                 )
@@ -28,6 +28,7 @@ class ListPage extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ListCardview(
+                        id: event.id,
                         name: event.title,
                         description: event.description,
                         date: event.date,

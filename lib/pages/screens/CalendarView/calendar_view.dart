@@ -5,6 +5,12 @@ class CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Align(
+      child: Text(
+        "Calender View",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+      ),
+    );
   }
 }
