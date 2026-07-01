@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AppTheme {
-  AppTheme._();
+class AppTheme extends ChangeNotifier {
+  ThemeMode themeMode = ThemeMode.light;
+
+  ThemeData get theme => themeMode == ThemeMode.light ? lightTheme : darkTheme;
+
+  void toggleTheme() {
+    themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
+  }
 
   static ThemeData get lightTheme => ThemeData(
-    //fontFamily: "Inter",
+    fontFamily: "Inter",
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF4F46E5), // Indigo / NavigatorBar ve Ana Buton rengi
       secondary: Color(
@@ -31,6 +38,7 @@ class AppTheme {
   );
 
   static ThemeData get darkTheme => ThemeData(
+    fontFamily: "Inter",
     colorScheme: ColorScheme.dark(
       primary: Color(
         0xFF6366F1,

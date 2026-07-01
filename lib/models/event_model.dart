@@ -32,4 +32,26 @@ class EventModel {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
+
+  factory EventModel.fromJson(Map<String, dynamic> json) {
+    return EventModel(
+      id: json["id"],
+      title: json["title"],
+      description: json["description"],
+      date: json["date"],
+      time: json["time"],
+      isCompleted: json["isCompleted"] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "description": description,
+      "date": date,
+      "time": time,
+      "isCompleted": isCompleted,
+    };
+  }
 }
