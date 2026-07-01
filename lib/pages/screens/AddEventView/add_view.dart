@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:reminder/providers/event_provider.dart';
 
 class AddView extends ConsumerStatefulWidget {
@@ -33,7 +32,7 @@ class _AddViewState extends ConsumerState<AddView> {
                 ),
                 child: TextField(
                   controller: _textController,
-                  maxLines: 10,
+                  maxLines: 9,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.tertiary,
                     fontSize: 20,
@@ -59,7 +58,7 @@ class _AddViewState extends ConsumerState<AddView> {
               SizedBox(height: 30),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -71,6 +70,17 @@ class _AddViewState extends ConsumerState<AddView> {
                   ),
                   onPressed: () async {
                     print("BUTONA BASTIN");
+                    final allText = _textController.text.trim();
+                    _infoCard(
+                      context,
+                      name: allText,
+                      desciptiom: 'Gemini Analyze Here',
+                      date: '01.07.2026',
+                      time: '23:59',
+                    );
+
+                    /*
+                    
                     final enteredText = _textController.text.trim();
 
                     if (enteredText.isNotEmpty) {
@@ -102,7 +112,7 @@ class _AddViewState extends ConsumerState<AddView> {
                           ),
                         ),
                       );
-                    }
+                    }*/
                   },
                   child: const Text(
                     "ADD EVENT",
@@ -114,6 +124,227 @@ class _AddViewState extends ConsumerState<AddView> {
           ),
         ),
       ),
+    );
+  }
+
+  void _infoCard(
+    BuildContext context, {
+    required String name,
+    required String desciptiom,
+    required String date,
+    required String time,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(24),
+          ),
+          elevation: 8,
+          backgroundColor: Colors.white,
+          child: Container(
+            padding: EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.black, width: 1),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Event Preview",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 24),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Event Name : ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            name,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        children: [
+                          Text(
+                            'Event Description : ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            desciptiom,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        children: [
+                          Text(
+                            'Event Date : ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            date,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            ' • ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+
+                          Text(
+                            "Event Time : ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            time,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    24,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 50,
+                                  vertical: 10,
+                                ),
+                                child: Text(
+                                  "Edit",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    24,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                ref
+                                    .read(eventListProvider.notifier)
+                                    .addEvent(name, desciptiom, date, time);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Event succesfully editted in your list',
+                                    ), //BURAYI ADD EVENTTEKI GIBI SNACK BAR YAP
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 40,
+                                  vertical: 10,
+                                ),
+                                child: Text(
+                                  "Accept",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
