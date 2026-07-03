@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:reminder/providers/event_provider.dart';
+import 'package:reminder/providers/gemini_provider.dart';
 
 class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
@@ -20,96 +20,189 @@ class _AddViewState extends ConsumerState<AddView> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isGeminiLoading = ref.watch(geminiLoadingProvider);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 114),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-                child: TextField(
-                  controller: _textController,
-                  maxLines: 9,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.tertiary,
-                    fontSize: 20,
+      body: isGeminiLoading
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
-
-                    hintText: "There's a meeting tomorrow at 8:40.",
-                    hintStyle: TextStyle(
-                      color: Theme.of(
+                  SizedBox(height: 16),
+                  Text(
+                    "Gemini Analyze Your Text",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                  ),
+                  SizedBox(height: 16),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.onSurface,
+                      foregroundColor: Theme.of(
                         context,
-                      ).colorScheme.tertiary.withOpacity(0.5),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300,
+                      ).colorScheme.onSecondary,
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () async {
-                    print("BUTONA BASTIN");
-                    final fullTime = DateTime.now();
-                    final dateNow = DateFormat("dd/MM/yyyy").format(fullTime);
-                    final timeNow = DateFormat("HH:mm").format(fullTime);
-                    final allText = _textController.text.trim();
-                    if (allText.isNotEmpty) {
-                      _infoCard(
-                        context,
-                        name: allText,
-                        description: 'Gemini Analyze Here',
-                        date: dateNow,
-                        time: timeNow,
-                      );
-                      _textController.clear();
-                    } else {
-                      print("HATA");
+                    onPressed: () {
+                      ref
+                          .read(geminiLoadingProvider.notifier)
+                          .cancelOperation();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Please write something!"),
-                          backgroundColor: Colors.redAccent,
-                          behavior: SnackBarBehavior.floating,
-                          duration: Duration(seconds: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                        const SnackBar(
+                          content: Text('Operation canceled ny user!'),
                         ),
                       );
-                    }
-                  },
-                  child: const Text(
-                    "ADD EVENT",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    },
+                    child: Text(
+                      'Cancel',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : SafeArea(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 114,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          child: TextField(
+                            controller: _textController,
+                            maxLines: 9,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              fontSize: 20,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+
+                              hintText: "There's a meeting tomorrow at 8:40.",
+                              hintStyle: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.tertiary.withOpacity(0.5),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () async {
+                              print("BUTONA BASTIN");
+                              final String userText = _textController.text
+                                  .trim();
+                              if (userText.isNotEmpty) {
+                                ref
+                                    .read(geminiLoadingProvider.notifier)
+                                    .setLoading(true);
+
+                                final geminiService = ref.read(
+                                  geminiServiceProvider,
+                                );
+                                final Map<String, dynamic>? eventData =
+                                    await geminiService.parseTexttoEvent(
+                                      userText,
+                                    );
+
+                                ref
+                                    .read(geminiLoadingProvider.notifier)
+                                    .setLoading(false);
+
+                                if (eventData != null) {
+                                  _infoCard(
+                                    context,
+                                    name: eventData['eventName'] ?? 'New Event',
+                                    description:
+                                        eventData['description'] ?? '--',
+                                    date:
+                                        eventData['date'] ??
+                                        '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                                    time:
+                                        eventData['time'] ??
+                                        '${DateTime.now().hour}:${DateTime.now().minute}',
+                                    onConfrim: (name, desc, date, time) {
+                                      ref
+                                          .read(eventListProvider.notifier)
+                                          .addEvent(name, desc, date, time);
+
+                                      _textController.clear();
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Event successfully added to calendar!!',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Gemini could not parse the text.Please try again!!',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Please write something!!"),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text(
+                              "ADD EVENT",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -119,6 +212,8 @@ class _AddViewState extends ConsumerState<AddView> {
     required String description,
     required String date,
     required String time,
+    required Function(String name, String desc, String date, String time)
+    onConfrim,
   }) {
     TextEditingController nameEditing = TextEditingController(text: name);
     TextEditingController descEditing = TextEditingController(
@@ -205,12 +300,23 @@ class _AddViewState extends ConsumerState<AddView> {
                               TimeOfDay? pickedTime = await showTimePicker(
                                 context: context,
                                 initialTime: TimeOfDay.now(),
+                                initialEntryMode: TimePickerEntryMode.inputOnly,
+                                builder:
+                                    (BuildContext timecontext, Widget? child) {
+                                      return MediaQuery(
+                                        data: MediaQuery.of(
+                                          timecontext,
+                                        ).copyWith(alwaysUse24HourFormat: true),
+                                        child: child!,
+                                      );
+                                    },
                               );
                               if (pickedTime != null) {
                                 setPopUpState(() {
                                   timeEditing =
                                       "${pickedTime.hour}:${pickedTime.minute}";
                                 });
+                                setState(() {});
                               }
                             },
                           ),
@@ -235,20 +341,15 @@ class _AddViewState extends ConsumerState<AddView> {
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
+                                        horizontal: 18,
                                         vertical: 10,
                                       ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(width: 2),
-                                          Text(
-                                            "Cancel",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        "Cancel",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -272,30 +373,11 @@ class _AddViewState extends ConsumerState<AddView> {
                                     onPressed: () {
                                       Navigator.pop(dialogcontext);
 
-                                      ref
-                                          .read(eventListProvider.notifier)
-                                          .addEvent(
-                                            nameEditing.text.trim(),
-                                            descEditing.text.trim(),
-                                            dateEditing,
-                                            timeEditing,
-                                          );
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Event succesfully added in your list!!',
-                                          ),
-                                          backgroundColor: Colors.redAccent,
-                                          behavior: SnackBarBehavior.floating,
-                                          duration: Duration(seconds: 2),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                        ),
+                                      onConfrim(
+                                        nameEditing.text.trim(),
+                                        descEditing.text.trim(),
+                                        dateEditing,
+                                        timeEditing,
                                       );
                                     },
                                     child: Padding(
@@ -389,7 +471,7 @@ class _AddViewState extends ConsumerState<AddView> {
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap, // Tıklandığında takvim veya saati açacak
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -407,7 +489,7 @@ class _AddViewState extends ConsumerState<AddView> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: color.surface, // Senin Slate arka plan rengin
+              color: color.surface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(

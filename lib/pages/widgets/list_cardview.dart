@@ -332,12 +332,32 @@ class ListCardview extends ConsumerWidget {
                                   TimeOfDay? pickedTime = await showTimePicker(
                                     context: context,
                                     initialTime: TimeOfDay.now(),
+                                    initialEntryMode:
+                                        TimePickerEntryMode.inputOnly,
+                                    builder:
+                                        (
+                                          BuildContext timecontext,
+                                          Widget? child,
+                                        ) {
+                                          return MediaQuery(
+                                            data: MediaQuery.of(timecontext)
+                                                .copyWith(
+                                                  alwaysUse24HourFormat: true,
+                                                ),
+                                            child: child!,
+                                          );
+                                        },
                                   );
                                   if (pickedTime != null) {
                                     setPopUpState(() {
                                       timeEditing =
                                           "${pickedTime.hour}:${pickedTime.minute}";
                                     });
+                                    String newTime =
+                                        "${pickedTime.hour}:${pickedTime.minute}";
+                                    ref
+                                        .read(eventListProvider.notifier)
+                                        .updateEventTime(id, newTime);
                                   }
                                 },
                               ),
@@ -362,20 +382,15 @@ class ListCardview extends ConsumerWidget {
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
+                                            horizontal: 18,
                                             vertical: 10,
                                           ),
-                                          child: Row(
-                                            children: [
-                                              SizedBox(width: 2),
-                                              Text(
-                                                "Cancel",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                              ),
-                                            ],
+                                          child: Text(
+                                            "Cancel",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                            ),
                                           ),
                                         ),
                                       ),

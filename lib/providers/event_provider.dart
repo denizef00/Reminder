@@ -72,6 +72,13 @@ class EventList extends _$EventList {
     ];
   }
 
+  void updateEventTime(String id, String newTime) {
+    state = [
+      for (final event in state)
+        if (event.id == id) event.copyWith(time: newTime) else event,
+    ];
+  }
+
   Future<void> _saveEvent(List<EventModel> currentEvent) async {
     try {
       final prefs = await SharedPreferences.getInstance();
