@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../models/event_model.dart';
 
 part 'event_provider.g.dart';
@@ -16,9 +15,10 @@ class EventList extends _$EventList {
     return [];
   }
 
+  final uuid = Uuid();
   void addEvent(String title, String description, String date, String time) {
     final newEvent = EventModel(
-      id: DateTime.now().toString(),
+      id: uuid.v4(),
       title: title,
       description: description,
       date: date,

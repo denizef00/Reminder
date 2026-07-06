@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:reminder/providers/event_provider.dart';
 
 class ListCardview extends ConsumerWidget {
@@ -13,7 +12,7 @@ class ListCardview extends ConsumerWidget {
   final VoidCallback onCheckPressed;
   final VoidCallback onDeletePressed;
 
-  const ListCardview({
+  ListCardview({
     super.key,
     required this.id,
     required this.name,
@@ -24,12 +23,17 @@ class ListCardview extends ConsumerWidget {
     required this.onCheckPressed,
     required this.onDeletePressed,
   });
-
+  final minuteTickProvider = StreamProvider<int>((ref) {
+    return Stream.periodic(
+      const Duration(seconds: 30),
+      (computationCount) => computationCount,
+    );
+  });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fullTime = DateTime.now();
-    final dateNow = DateFormat("dd/MM/yyyy").format(fullTime);
-    final timeNow = DateFormat("HH:mm").format(fullTime);
+    final bool isPast = _checkDate(date, time);
+    final status = isCompleted || isPast;
+    ref.watch(minuteTickProvider);
     return Stack(
       alignment: Alignment.centerRight,
       children: [
@@ -40,8 +44,8 @@ class ListCardview extends ConsumerWidget {
               ref,
               name: name,
               desciptiom: description,
-              date: dateNow,
-              time: timeNow,
+              date: date,
+              time: time,
             );
           },
           child: Container(
@@ -53,26 +57,43 @@ class ListCardview extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: !isCompleted
+              child: !status
                   ? _listCardWidget(
                       context,
                       event: name,
-                      date: dateNow,
-                      time: timeNow,
+                      date: date,
+                      time: time,
                     )
                   : _completeCardWidget(
                       context,
                       event: name,
-                      date: dateNow,
-                      time: timeNow,
+                      date: date,
+                      time: time,
                     ),
             ),
           ),
         ),
         IconButton(
-          onPressed: onCheckPressed,
+          onPressed: () {
+            if (isPast) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "This event is over!\nYou can edit the event details!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            } else {
+              onCheckPressed();
+            }
+          },
           icon: const Icon(Icons.check_circle_outline_rounded),
-          color: !isCompleted
+          color: !status
               ? Theme.of(context).colorScheme.onPrimaryContainer
               : Theme.of(context).colorScheme.onSurface,
           iconSize: 30,
@@ -589,5 +610,26 @@ class ListCardview extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  bool _checkDate(String eventDateStr, String eventTimeStr) {
+    try {
+      List<String> dateParts = eventDateStr.split('/');
+      if (dateParts.length != 3) return false;
+
+      int day = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int year = int.parse(dateParts[2]);
+
+      List<String> timeParts = eventTimeStr.split(':');
+      int hour = timeParts.length > 0 ? int.parse(timeParts[0]) : 0;
+      int minute = timeParts.length > 1 ? int.parse(timeParts[1]) : 0;
+
+      DateTime eventDateTime = DateTime(year, month, day, hour, minute);
+
+      return eventDateTime.isBefore(DateTime.now());
+    } catch (e) {
+      return false;
+    }
   }
 }

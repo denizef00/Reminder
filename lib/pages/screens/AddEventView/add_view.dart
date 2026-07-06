@@ -128,7 +128,24 @@ class _AddViewState extends ConsumerState<AddView> {
                               print("BUTONA BASTIN");
                               final String userText = _textController.text
                                   .trim();
+
                               if (userText.isNotEmpty) {
+                                /*
+                                final day = DateTime.now().day.toString();
+                                final month = DateTime.now().month.toString();
+                                final year = DateTime.now().year.toString();
+                                final hour = DateTime.now().hour.toString();
+                                final minute = DateTime.now().minute.toString();
+
+                                _infoCard(
+                                  context,
+                                  name: userText,
+                                  description: 'description',
+                                  date: '$day/$month/$year',
+                                  time: '$hour:$minute',
+                                  onConfrim: (name, desc, date, time) {},
+                                );*/
+
                                 ref
                                     .read(geminiLoadingProvider.notifier)
                                     .setLoading(true);
@@ -221,8 +238,10 @@ class _AddViewState extends ConsumerState<AddView> {
     );
     String dateEditing = date;
     String timeEditing = time;
+
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (BuildContext dialogcontext) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setPopUpState) {

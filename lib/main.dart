@@ -10,6 +10,12 @@ void main() async {
 
   await dotenv.load(fileName: ".env");
 
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    if (details.exceptionAsString().contains('overflowed')) {
+      return const SizedBox.shrink();
+    }
+    return ErrorWidget(details.exception);
+  };
   runApp(ProviderScope(child: const MyApp()));
 }
 
