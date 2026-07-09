@@ -92,6 +92,28 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
       return _isSameDayWithEvent(_selectedDay, event.date);
     }).toList();
 
+    activeEvents.sort((a, b) {
+      try {
+        final timePartsA = a.time.split(":");
+
+        final timePartsB = b.time.split(":");
+
+        final aHour = int.parse(timePartsA[0]);
+        final aMinute = int.parse(timePartsA[1]);
+
+        final bHour = int.parse(timePartsB[0]);
+        final bMinute = int.parse(timePartsB[1]);
+
+        if (aHour != bHour) {
+          return aHour.compareTo(bHour);
+        } else {
+          return aMinute.compareTo(bMinute);
+        }
+      } catch (e) {
+        return a.time.compareTo(b.time);
+      }
+    });
+
     if (activeEvents.isEmpty) {
       return const Center(child: Text('No events scheduled for this day,'));
     }
@@ -466,7 +488,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap, // Tıklandığında takvim veya saati açacak
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,7 +506,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: color.surface, // Senin Slate arka plan rengin
+              color: color.surface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(

@@ -16,7 +16,38 @@ class ListPage extends ConsumerWidget {
         ? allEvents.where((event) {
             return !event.isCompleted && !_isDatePast(context, event.date);
           }).toList()
-        : allEvents;
+        : List.from(allEvents);
+
+    displayEvents.sort(((a, b) {
+      try {
+        List<String> datePartsA = a.date.split('/');
+        List<String> timePartsA = a.time.split(":");
+        DateTime dateTimeA = DateTime(
+          int.parse(datePartsA[2]),
+          int.parse(datePartsA[1]),
+          int.parse(datePartsA[0]),
+          int.parse(timePartsA[0]),
+          int.parse(timePartsA[1]),
+        );
+
+        List<String> datePartsB = b.date.split('/');
+        List<String> timePartsB = b.time.split(":");
+        DateTime dateTimeB = DateTime(
+          int.parse(datePartsB[2]),
+          int.parse(datePartsB[1]),
+          int.parse(datePartsB[0]),
+          int.parse(timePartsB[0]),
+          int.parse(timePartsB[1]),
+        );
+
+        return dateTimeA.compareTo(dateTimeB);
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Sort ederken hata")));
+        return 0;
+      }
+    }));
     return Scaffold(
       body: Center(
         child: Padding(
