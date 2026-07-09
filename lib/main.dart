@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/app/router.dart';
 import 'package:reminder/app/theme.dart';
@@ -27,6 +28,12 @@ class MyApp extends ConsumerWidget {
     final themeAsync = ref.watch(themeProvider);
     final currentThemeMode = themeAsync.value ?? ThemeMode.light;
     return MaterialApp.router(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', 'US'), Locale('en', 'GB')],
       routerConfig: router,
       debugShowCheckedModeBanner: false,
 

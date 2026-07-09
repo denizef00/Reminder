@@ -333,6 +333,7 @@ class ListCardview extends ConsumerWidget {
                                     initialDate: DateTime.now(),
                                     firstDate: DateTime(2025),
                                     lastDate: DateTime(2030),
+                                    locale: const Locale('en', 'GB'),
                                   );
                                   if (pickedDate != null) {
                                     setPopUpState(() {
@@ -360,22 +361,49 @@ class ListCardview extends ConsumerWidget {
                                           BuildContext timecontext,
                                           Widget? child,
                                         ) {
-                                          return MediaQuery(
-                                            data: MediaQuery.of(timecontext)
-                                                .copyWith(
-                                                  alwaysUse24HourFormat: true,
-                                                ),
-                                            child: child!,
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              textSelectionTheme:
+                                                  TextSelectionThemeData(
+                                                    cursorColor: Theme.of(
+                                                      context,
+                                                    ).colorScheme.tertiary,
+                                                    selectionColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .tertiary
+                                                            .withOpacity(0.3),
+                                                    selectionHandleColor:
+                                                        Theme.of(
+                                                          context,
+                                                        ).colorScheme.tertiary,
+                                                  ),
+
+                                              colorScheme: Theme.of(context)
+                                                  .colorScheme
+                                                  .copyWith(
+                                                    onSurface: Theme.of(
+                                                      context,
+                                                    ).colorScheme.tertiary,
+                                                  ),
+                                            ),
+                                            child: MediaQuery(
+                                              data: MediaQuery.of(timecontext)
+                                                  .copyWith(
+                                                    alwaysUse24HourFormat: true,
+                                                  ),
+                                              child: child!,
+                                            ),
                                           );
                                         },
                                   );
                                   if (pickedTime != null) {
                                     setPopUpState(() {
                                       timeEditing =
-                                          "${pickedTime.hour}:${pickedTime.minute}";
+                                          "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
                                     });
                                     String newTime =
-                                        "${pickedTime.hour}:${pickedTime.minute}";
+                                        "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
                                     ref
                                         .read(eventListProvider.notifier)
                                         .updateEventTime(id, newTime);

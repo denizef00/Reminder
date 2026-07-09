@@ -130,22 +130,6 @@ class _AddViewState extends ConsumerState<AddView> {
                                   .trim();
 
                               if (userText.isNotEmpty) {
-                                /*
-                                final day = DateTime.now().day.toString();
-                                final month = DateTime.now().month.toString();
-                                final year = DateTime.now().year.toString();
-                                final hour = DateTime.now().hour.toString();
-                                final minute = DateTime.now().minute.toString();
-
-                                _infoCard(
-                                  context,
-                                  name: userText,
-                                  description: 'description',
-                                  date: '$day/$month/$year',
-                                  time: '$hour:$minute',
-                                  onConfrim: (name, desc, date, time) {},
-                                );*/
-
                                 ref
                                     .read(geminiLoadingProvider.notifier)
                                     .setLoading(true);
@@ -299,6 +283,7 @@ class _AddViewState extends ConsumerState<AddView> {
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(2025),
                                 lastDate: DateTime(2030),
+                                locale: const Locale('en', 'GB'),
                               );
                               if (pickedDate != null) {
                                 setPopUpState(() {
@@ -322,18 +307,45 @@ class _AddViewState extends ConsumerState<AddView> {
                                 initialEntryMode: TimePickerEntryMode.inputOnly,
                                 builder:
                                     (BuildContext timecontext, Widget? child) {
-                                      return MediaQuery(
-                                        data: MediaQuery.of(
-                                          timecontext,
-                                        ).copyWith(alwaysUse24HourFormat: true),
-                                        child: child!,
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textSelectionTheme:
+                                              TextSelectionThemeData(
+                                                cursorColor: Theme.of(
+                                                  context,
+                                                ).colorScheme.tertiary,
+                                                selectionColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary
+                                                        .withOpacity(0.3),
+                                                selectionHandleColor: Theme.of(
+                                                  context,
+                                                ).colorScheme.tertiary,
+                                              ),
+
+                                          colorScheme: Theme.of(context)
+                                              .colorScheme
+                                              .copyWith(
+                                                onSurface: Theme.of(
+                                                  context,
+                                                ).colorScheme.tertiary,
+                                              ),
+                                        ),
+                                        child: MediaQuery(
+                                          data: MediaQuery.of(timecontext)
+                                              .copyWith(
+                                                alwaysUse24HourFormat: true,
+                                              ),
+                                          child: child!,
+                                        ),
                                       );
                                     },
                               );
                               if (pickedTime != null) {
                                 setPopUpState(() {
                                   timeEditing =
-                                      "${pickedTime.hour}:${pickedTime.minute}";
+                                      "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
                                 });
                                 setState(() {});
                               }

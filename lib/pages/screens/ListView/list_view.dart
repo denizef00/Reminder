@@ -13,25 +13,25 @@ class ListPage extends ConsumerWidget {
     final allEvents = ref.watch(eventListProvider);
     final onlyUncompleted = ref.watch(onlyUncompletedProvider);
     final displayEvents = onlyUncompleted
-        ? allEvents.where((event) => !event.isCompleted).toList()
+        ? allEvents.where((event) {
+            return !event.isCompleted && !_isDatePast(context, event.date);
+          }).toList()
         : allEvents;
-    //final eventList = ref.watch(eventListProvider);
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 21),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Reminders',
+                      'Filter',
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
@@ -41,7 +41,7 @@ class ListPage extends ConsumerWidget {
                         onlyUncompleted
                             ? Icons.check_circle_outline_rounded
                             : Icons.list_alt_rounded,
-                        size: 18,
+                        size: 15,
                         color: onlyUncompleted
                             ? Colors.white
                             : Theme.of(context).colorScheme.primary,
@@ -50,6 +50,7 @@ class ListPage extends ConsumerWidget {
                         onlyUncompleted ? "Active Only" : "Show Uncompleted",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 12,
                           color: onlyUncompleted
                               ? Colors.white
                               : Theme.of(context).colorScheme.tertiary,
@@ -106,11 +107,6 @@ class ListPage extends ConsumerWidget {
                                 ref
                                     .read(eventListProvider.notifier)
                                     .toggleCheck(event.id);
-                                final guncel = ref
-                                    .read(eventListProvider)
-                                    .firstWhere((e) => e.id == event.id);
-
-                                print(guncel.isCompleted);
                               },
                               onDeletePressed: () {
                                 ref
@@ -127,5 +123,26 @@ class ListPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _isDatePast(BuildContext context, String eventDateStr) {
+    try {
+      List<String> parts = eventDateStr.split('/');
+      if (parts.length != 3) return false;
+
+      int day = int.parse(parts[0]);
+      int month = int.parse(parts[1]);
+      int year = int.parse(parts[2]);
+
+      DateTime eventDate = DateTime(year, month, day);
+      DateTime today = DateTime.now();
+
+      return eventDate.isBefore(today);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('isDatePast Hatali: $e')));
+      return false;
+    }
   }
 }
