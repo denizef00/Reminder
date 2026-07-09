@@ -51,7 +51,7 @@ class _AddViewState extends ConsumerState<AddView> {
                           .cancelOperation();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Operation canceled ny user!'),
+                          content: Text('Operation canceled by user!'),
                         ),
                       );
                     },

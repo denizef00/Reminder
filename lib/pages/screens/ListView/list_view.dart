@@ -44,7 +44,7 @@ class ListPage extends ConsumerWidget {
       } catch (e) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Sort ederken hata")));
+        ).showSnackBar(SnackBar(content: Text("Sortting Error! $e")));
         return 0;
       }
     }));
@@ -172,7 +172,7 @@ class ListPage extends ConsumerWidget {
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('isDatePast Hatali: $e')));
+      ).showSnackBar(SnackBar(content: Text('Date checking error: $e')));
       return false;
     }
   }
