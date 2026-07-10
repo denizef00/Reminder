@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:reminder/services/notification_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -16,7 +17,12 @@ class EventList extends _$EventList {
   }
 
   final uuid = Uuid();
-  void addEvent(String title, String description, String date, String time) {
+  void addEvent(
+    String title,
+    String description,
+    String date,
+    String time,
+  ) async {
     final newEvent = EventModel(
       id: uuid.v4(),
       title: title,
@@ -27,6 +33,13 @@ class EventList extends _$EventList {
 
     state = [...state, newEvent];
     _saveEvent(state);
+    await NotificationServices().scheduleNotification(
+      id: newEvent.id.hashCode, // Benzersiz bir int ID
+      title: "Upcoming Event: ${newEvent.title}",
+      body: "Your event will start in 15 minutes at ${newEvent.time}!",
+      dateStr: newEvent.date, // "14/07/2026"
+      timeStr: newEvent.time, // "21:00"
+    );
   }
 
   void deleteEvent(String id) {

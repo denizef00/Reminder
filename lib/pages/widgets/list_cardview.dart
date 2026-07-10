@@ -431,7 +431,7 @@ class ListCardview extends ConsumerWidget {
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 18,
+                                            horizontal: 10,
                                             vertical: 10,
                                           ),
                                           child: Text(
@@ -452,7 +452,7 @@ class ListCardview extends ConsumerWidget {
                                             context,
                                           ).colorScheme.primary,
                                           padding: EdgeInsets.symmetric(
-                                            vertical: 10,
+                                            vertical: 5,
                                           ),
                                           minimumSize: Size(50, 50),
                                           shape: RoundedRectangleBorder(

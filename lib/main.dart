@@ -5,12 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/app/router.dart';
 import 'package:reminder/app/theme.dart';
 import 'package:reminder/providers/theme_provider.dart';
+import 'package:reminder/services/notification_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
 
+  await NotificationServices().initNotification();
+  await NotificationServices().requestPermissions();
   ErrorWidget.builder = (FlutterErrorDetails details) {
     if (details.exceptionAsString().contains('overflowed')) {
       return const SizedBox.shrink();
