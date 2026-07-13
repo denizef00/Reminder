@@ -127,7 +127,7 @@ class ListPage extends ConsumerWidget {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: ListCardview(
-                              id: event.id,
+                              id: event.id.toString(),
                               name: event.title,
                               description: event.description,
                               date: event.date,

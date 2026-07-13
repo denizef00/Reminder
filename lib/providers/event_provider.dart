@@ -23,8 +23,9 @@ class EventList extends _$EventList {
     String date,
     String time,
   ) async {
+    final int id = uuid.v4().hashCode;
     final newEvent = EventModel(
-      id: uuid.v4(),
+      id: id,
       title: title,
       description: description,
       date: date,
@@ -33,12 +34,13 @@ class EventList extends _$EventList {
 
     state = [...state, newEvent];
     _saveEvent(state);
+
     await NotificationServices().scheduleNotification(
-      id: newEvent.id.hashCode, // Benzersiz bir int ID
-      title: "Upcoming Event: ${newEvent.title}",
-      body: "Your event will start in 15 minutes at ${newEvent.time}!",
-      dateStr: newEvent.date, // "14/07/2026"
-      timeStr: newEvent.time, // "21:00"
+      id: id,
+      title: title,
+      body: description,
+      dateStr: date,
+      timeStr: time,
     );
   }
 

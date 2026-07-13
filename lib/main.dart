@@ -14,6 +14,7 @@ void main() async {
 
   await NotificationServices().initNotification();
   await NotificationServices().requestPermissions();
+
   ErrorWidget.builder = (FlutterErrorDetails details) {
     if (details.exceptionAsString().contains('overflowed')) {
       return const SizedBox.shrink();

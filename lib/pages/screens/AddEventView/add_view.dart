@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/providers/event_provider.dart';
 import 'package:reminder/providers/gemini_provider.dart';
+import 'package:reminder/services/notification_services.dart';
 
 class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
@@ -130,6 +131,24 @@ class _AddViewState extends ConsumerState<AddView> {
                                   .trim();
 
                               if (userText.isNotEmpty) {
+                                _infoCard(
+                                  context,
+                                  name: userText,
+                                  description: "Test Desc",
+                                  date:
+                                      "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                                  time:
+                                      "${DateTime.now().hour}:${DateTime.now().minute}",
+                                  onConfrim: ((name, desc, date, time) {
+                                    ref
+                                        .read(eventListProvider.notifier)
+                                        .addEvent(name, desc, date, time);
+                                    _textController.clear();
+                                  }),
+                                );
+                              }
+                              /*
+                              if (userText.isNotEmpty) {
                                 ref
                                     .read(geminiLoadingProvider.notifier)
                                     .setLoading(true);
@@ -147,6 +166,7 @@ class _AddViewState extends ConsumerState<AddView> {
                                     .setLoading(false);
 
                                 if (eventData != null) {
+
                                   _infoCard(
                                     context,
                                     name: eventData['eventName'] ?? 'New Event',
@@ -190,13 +210,23 @@ class _AddViewState extends ConsumerState<AddView> {
                                     content: Text("Please write something!!"),
                                   ),
                                 );
-                              }
+                              }*/
                             },
                             child: const Text(
                               "ADD EVENT",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            NotificationServices().showNotification(
+                              id: 0,
+                              title: "Test",
+                              body: "TEST",
+                            );
+                          },
+                          child: Text("Send Notification"),
                         ),
                       ],
                     ),
@@ -534,11 +564,7 @@ class _AddViewState extends ConsumerState<AddView> {
                     color: color.tertiary,
                   ),
                 ),
-                Icon(
-                  icon,
-                  size: 18,
-                  color: color.primary,
-                ), // Senin Indigo ikonun
+                Icon(icon, size: 18, color: color.primary),
               ],
             ),
           ),

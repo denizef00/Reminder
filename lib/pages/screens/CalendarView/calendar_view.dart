@@ -154,7 +154,9 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                 subtitle: Text(event.time),
                 trailing: IconButton(
                   onPressed: () {
-                    ref.read(eventListProvider.notifier).toggleCheck(event.id);
+                    ref
+                        .read(eventListProvider.notifier)
+                        .toggleCheck(event.id.toString());
                   },
                   icon: const Icon(Icons.check_circle_outline_rounded),
                   color: event.isCompleted
@@ -297,7 +299,10 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                                         "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
                                     ref
                                         .read(eventListProvider.notifier)
-                                        .updateEventTime(event.id, newTime);
+                                        .updateEventTime(
+                                          event.id.toString(),
+                                          newTime,
+                                        );
                                   }
                                 },
                               ),
@@ -359,7 +364,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                                           ref
                                               .read(eventListProvider.notifier)
                                               .updateEvent(
-                                                id: event.id,
+                                                id: event.id.toString(),
                                                 newTitle: nameEditing.text
                                                     .trim(),
                                                 newDesc: descEditing.text
@@ -424,7 +429,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                         Navigator.pop(dialogcontext);
                         ref
                             .read(eventListProvider.notifier)
-                            .deleteEvent(event.id);
+                            .deleteEvent(event.id.toString());
                       },
                       icon: const Icon(Icons.delete_outline_rounded),
                       color: Theme.of(context).colorScheme.error,

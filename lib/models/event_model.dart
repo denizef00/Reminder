@@ -1,5 +1,5 @@
 class EventModel {
-  final String id;
+  final int id;
   final String title;
   final String description;
   final String date;
@@ -16,7 +16,7 @@ class EventModel {
   });
 
   EventModel copyWith({
-    String? id,
+    int? id,
     String? title,
     String? description,
     String? date,
