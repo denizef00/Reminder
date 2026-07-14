@@ -16,10 +16,24 @@ class NotificationServices {
       if (_isInitialized) return;
 
       tz.initializeTimeZones();
-      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-      String currentTimeZone = timezoneInfo.identifier;
-      tz.setLocalLocation(tz.getLocation(currentTimeZone));
+      try {
+        final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+        String currentTimeZone = timezoneInfo.identifier;
+        print("Cihaz timezone: $currentTimeZone");
 
+        // "GMT" gibi tz veritabanının tanımadığı isimleri düzelt
+        if (currentTimeZone == "GMT" || currentTimeZone.isEmpty) {
+          currentTimeZone =
+              "Europe/Istanbul"; // ya da Etc/GMT gibi güvenli bir fallback
+        }
+
+        tz.setLocalLocation(tz.getLocation(currentTimeZone));
+        print("tz.local set edildi: ${tz.local}");
+      } catch (e) {
+        print("Init Notifi Error: $e");
+        // UTC yerine daha mantıklı bir fallback
+        tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
+      }
       const initializationSettingsAndroid = AndroidInitializationSettings(
         '@mipmap/ic_launcher',
       );
@@ -78,14 +92,18 @@ class NotificationServices {
     //required String dateStr,
     //required String timeStr,
   }) async {
-    final scheduleDate = tz.TZDateTime.from(dateTime, tz.local);
+    final tz.TZDateTime scheduleDate = tz.TZDateTime(
+      tz.local,
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      dateTime.hour,
+      dateTime.minute,
+    );
 
-    if (scheduleDate.isBefore(tz.TZDateTime.now(tz.local))) {
-      print(
-        "UYARI: Geçmiş bir tarihe bildirim kurulmaya çalışıldı: $scheduleDate",
-      );
-      return;
-    }
+    print("tz.local: ${tz.local}");
+    print("Kurulan (tz): $scheduleDate");
+    print("Şimdi (tz): ${tz.TZDateTime.now(tz.local)}");
 
     await notificationsPlugin.zonedSchedule(
       id: id,
@@ -96,13 +114,9 @@ class NotificationServices {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
 
-    print(
-      "Bildirim kuruldu: $scheduleDate (şimdi: ${tz.TZDateTime.now(tz.local)})",
-    );
-    print("Şu an: ${tz.TZDateTime.now(tz.local)}");
-    print("Kurulan: $scheduleDate");
     final pending = await notificationsPlugin.pendingNotificationRequests();
     print("Bekleyen bildirim sayısı: ${pending.length}");
+    ;
     /*
     try {
       print("--------------------------------------------------");

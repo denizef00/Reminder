@@ -34,24 +34,40 @@ class EventList extends _$EventList {
 
     state = [...state, newEvent];
     _saveEvent(state);
+    try {
+      final List<String> dateParts = date.split("/");
+      final List<String> timeParts = time.split(":");
+      final DateTime eventDate = DateTime(
+        int.parse(dateParts[2]),
+        int.parse(dateParts[1]),
+        int.parse(dateParts[0]),
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]),
+      );
+      print("=== DEBUG ===");
+      print("Girdi date: $date, time: $time");
+      print("Parse edilen eventDate: $eventDate");
+      print("Şu anki zaman: ${DateTime.now()}");
+      print("Geçmiş mi?: ${eventDate.isBefore(DateTime.now())}");
+      await NotificationServices().scheduleNotification(
+        id: id,
+        title: title,
+        body: description,
+        dateTime: eventDate,
+        //dateStr: date,
+        //timeStr: time,
+      );
 
-    final List<String> dateParts = date.split("/");
-    final List<String> timeParts = time.split(":");
-    final DateTime eventDate = DateTime(
-      int.parse(dateParts[2]),
-      int.parse(dateParts[1]),
-      int.parse(dateParts[0]),
-      int.parse(timeParts[0]),
-      int.parse(timeParts[1]),
-    );
-    await NotificationServices().scheduleNotification(
-      id: id,
-      title: title,
-      body: description,
-      dateTime: eventDate,
-      //dateStr: date,
-      //timeStr: time,
-    );
+      final pending = await NotificationServices().notificationsPlugin
+          .pendingNotificationRequests();
+      print("Bekleyen bildirim sayısı: ${pending.length}");
+      for (var p in pending) {
+        print("  -> id: ${p.id}, title: ${p.title}");
+      }
+    } catch (e, stack) {
+      print("HATA: $e");
+      print(stack);
+    }
   }
 
   void deleteEvent(String id) {
