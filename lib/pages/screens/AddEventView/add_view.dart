@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/providers/event_provider.dart';
 import 'package:reminder/providers/gemini_provider.dart';
-import 'package:reminder/services/notification_services.dart';
+//import 'package:reminder/services/notification_services.dart';
 
 class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
@@ -218,6 +218,7 @@ class _AddViewState extends ConsumerState<AddView> {
                             ),
                           ),
                         ),
+                        /*
                         TextButton(
                           onPressed: () {
                             NotificationServices().showNotification(
@@ -228,6 +229,17 @@ class _AddViewState extends ConsumerState<AddView> {
                           },
                           child: Text("Send Notification"),
                         ),
+                        TextButton(
+                          onPressed: () {
+                            NotificationServices().scheduleNotification(
+                              title: "Schedule Test",
+                              body: "SCHEDULE TEST",
+                              dateTime: DateTime(2026, 07, 14, 14, 03),
+                            );
+                            print('BILDIRIM KURULDU');
+                          },
+                          child: Text("Send Scheduled Notification"),
+                        ),*/
                       ],
                     ),
                   ),
@@ -440,7 +452,7 @@ class _AddViewState extends ConsumerState<AddView> {
                                         dateEditing,
                                         timeEditing,
                                       );
-
+                                      /*
                                       final dateParts = timeEditing.split("/");
                                       final timeParts = timeEditing.split(":");
                                       final DateTime eventDate = DateTime(
@@ -456,7 +468,7 @@ class _AddViewState extends ConsumerState<AddView> {
                                             title: nameEditing.text.trim(),
                                             body: descEditing.text.trim(),
                                             dateTime: eventDate,
-                                          );
+                                          );*/
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(

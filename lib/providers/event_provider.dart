@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:reminder/services/notification_services.dart';
+//import 'package:reminder/services/notification_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -23,9 +23,9 @@ class EventList extends _$EventList {
     String date,
     String time,
   ) async {
-    final int id = uuid.v4().hashCode;
+    //final int id = uuid.v4().hashCode;
     final newEvent = EventModel(
-      id: id,
+      id: uuid.v4(),
       title: title,
       description: description,
       date: date,
@@ -34,6 +34,7 @@ class EventList extends _$EventList {
 
     state = [...state, newEvent];
     _saveEvent(state);
+    /*
     try {
       final List<String> dateParts = date.split("/");
       final List<String> timeParts = time.split(":");
@@ -67,7 +68,7 @@ class EventList extends _$EventList {
     } catch (e, stack) {
       print("HATA: $e");
       print(stack);
-    }
+    }*/
   }
 
   void deleteEvent(String id) {

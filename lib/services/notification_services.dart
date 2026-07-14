@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
+//import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -12,6 +12,28 @@ class NotificationServices {
   final bool _isInitialized = false;
 
   Future<void> initNotification() async {
+    if (_isInitialized) return;
+
+    tz.initializeTimeZones();
+    final TimezoneInfo timezoneInfo = await FlutterTimezone.getLocalTimezone();
+    final String currentTimeZone = timezoneInfo.identifier;
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+
+    const initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await notificationsPlugin.initialize(settings: initializationSettings);
+    /*
     try {
       if (_isInitialized) return;
 
@@ -53,7 +75,7 @@ class NotificationServices {
       try {
         tz.setLocalLocation(tz.getLocation('UTC'));
       } catch (_) {}
-    }
+    }*/
   }
 
   NotificationDetails notificationDetails() {
@@ -85,7 +107,7 @@ class NotificationServices {
   }
 
   Future<void> scheduleNotification({
-    int id = 0,
+    int id = 1,
     required String title,
     required String body,
     required DateTime dateTime,
@@ -111,12 +133,10 @@ class NotificationServices {
       body: body,
       scheduledDate: scheduleDate,
       notificationDetails: notificationDetails(),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
 
-    final pending = await notificationsPlugin.pendingNotificationRequests();
-    print("Bekleyen bildirim sayısı: ${pending.length}");
-    ;
     /*
     try {
       print("--------------------------------------------------");

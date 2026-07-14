@@ -14,7 +14,8 @@ class ListPage extends ConsumerWidget {
     final onlyUncompleted = ref.watch(onlyUncompletedProvider);
     final displayEvents = onlyUncompleted
         ? allEvents.where((event) {
-            return !event.isCompleted && !_isDatePast(context, event.date);
+            return !event.isCompleted &&
+                !_isDatePast(context, event.date, event.time);
           }).toList()
         : List.from(allEvents);
 
@@ -117,6 +118,7 @@ class ListPage extends ConsumerWidget {
                           onlyUncompleted
                               ? "No active tasks left!"
                               : "No events have been added yet.\nYou can add them from the 'Add Event' screen!",
+                          textAlign: TextAlign.center,
                         ),
                       )
                     : ListView.builder(
@@ -156,20 +158,29 @@ class ListPage extends ConsumerWidget {
     );
   }
 
-  bool _isDatePast(BuildContext context, String eventDateStr) {
+  bool _isDatePast(
+    BuildContext context,
+    String eventDateStr,
+    String eventTimeStr,
+  ) {
     try {
-      List<String> parts = eventDateStr.split('/');
-      if (parts.length != 3) return false;
+      List<String> dateparts = eventDateStr.split('/');
+      List<String> timeparts = eventTimeStr.split(':');
 
-      int day = int.parse(parts[0]);
-      int month = int.parse(parts[1]);
-      int year = int.parse(parts[2]);
+      if (dateparts.length != 3 && timeparts.length != 2) return false;
 
-      DateTime eventDate = DateTime(year, month, day);
+      int day = int.parse(dateparts[0]);
+      int month = int.parse(dateparts[1]);
+      int year = int.parse(dateparts[2]);
+      int hour = int.parse(timeparts[0]);
+      int minute = int.parse(timeparts[1]);
+
+      DateTime eventDate = DateTime(year, month, day, hour, minute);
       DateTime today = DateTime.now();
 
       return eventDate.isBefore(today);
     } catch (e) {
+      print('Date checking error: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Date checking error: $e')));

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reminder/pages/widgets/swip_cardwidget.dart';
 import 'package:reminder/providers/event_provider.dart';
-import 'package:reminder/services/notification_services.dart';
+//import 'package:reminder/services/notification_services.dart';
 
 class ListCardview extends ConsumerWidget {
   final String id;
@@ -38,17 +39,43 @@ class ListCardview extends ConsumerWidget {
     return Stack(
       alignment: Alignment.centerRight,
       children: [
-        GestureDetector(
-          onTap: () {
-            _infoCard(
-              context,
-              ref,
-              name: name,
-              desciptiom: description,
-              date: date,
-              time: time,
+        SwipCardwidget(
+          onTap: () => _infoCard(
+            context,
+            ref,
+            name: name,
+            description: description,
+            date: date,
+            time: time,
+          ),
+          onDelete: () {
+            onDeletePressed();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Event succesfully deleted on your list!!"),
+              ),
             );
           },
+          onCheck: () {
+            if (isPast) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "This event is over!\nYou can edit the event details!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            } else {
+              onCheckPressed();
+            }
+          },
+          status: status,
+
           child: Container(
             height: 100,
             width: 520,
@@ -73,31 +100,6 @@ class ListCardview extends ConsumerWidget {
                     ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: () {
-            if (isPast) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "This event is over!\nYou can edit the event details!",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
-            } else {
-              onCheckPressed();
-            }
-          },
-          icon: const Icon(Icons.check_circle_outline_rounded),
-          color: !status
-              ? Theme.of(context).colorScheme.onPrimaryContainer
-              : Theme.of(context).colorScheme.onSurface,
-          iconSize: 30,
         ),
       ],
     );
@@ -257,7 +259,7 @@ class ListCardview extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required String name,
-    required String desciptiom,
+    required String description,
     required String date,
     required String time,
   }) {
@@ -531,9 +533,10 @@ class ListCardview extends ConsumerWidget {
                     ),
                     IconButton(
                       onPressed: () {
+                        /*
                         NotificationServices().cancelNotification(
                           id: int.parse(id),
-                        );
+                        );*/
                         Navigator.pop(dialogcontext);
                         onDeletePressed();
                       },
