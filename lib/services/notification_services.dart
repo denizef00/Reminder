@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotificationServices {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -10,26 +12,34 @@ class NotificationServices {
   final bool _isInitialized = false;
 
   Future<void> initNotification() async {
-    if (_isInitialized) return;
+    try {
+      if (_isInitialized) return;
 
-    tz.initializeTimeZones();
-    final timezoneName = tz.local.name;
-    tz.setLocalLocation(tz.getLocation(timezoneName));
+      tz.initializeTimeZones();
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      String currentTimeZone = timezoneInfo.identifier;
+      tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
-    const initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
+      const initializationSettingsAndroid = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
 
-    const initializationSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-    await notificationsPlugin.initialize(settings: initializationSettings);
+      const initializationSettingsIOS = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      );
+      const initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+      );
+      await notificationsPlugin.initialize(settings: initializationSettings);
+    } catch (e) {
+      print("Init Notifi Error: $e");
+      try {
+        tz.setLocalLocation(tz.getLocation('UTC'));
+      } catch (_) {}
+    }
   }
 
   NotificationDetails notificationDetails() {
@@ -40,6 +50,8 @@ class NotificationServices {
         channelDescription: 'Reminder Notification Description',
         importance: Importance.max,
         priority: Priority.high,
+        enableVibration: true,
+        fullScreenIntent: true,
       ),
       iOS: DarwinNotificationDetails(),
     );
@@ -62,9 +74,36 @@ class NotificationServices {
     int id = 0,
     required String title,
     required String body,
-    required String dateStr,
-    required String timeStr,
+    required DateTime dateTime,
+    //required String dateStr,
+    //required String timeStr,
   }) async {
+    final scheduleDate = tz.TZDateTime.from(dateTime, tz.local);
+
+    if (scheduleDate.isBefore(tz.TZDateTime.now(tz.local))) {
+      print(
+        "UYARI: Geçmiş bir tarihe bildirim kurulmaya çalışıldı: $scheduleDate",
+      );
+      return;
+    }
+
+    await notificationsPlugin.zonedSchedule(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: scheduleDate,
+      notificationDetails: notificationDetails(),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+
+    print(
+      "Bildirim kuruldu: $scheduleDate (şimdi: ${tz.TZDateTime.now(tz.local)})",
+    );
+    print("Şu an: ${tz.TZDateTime.now(tz.local)}");
+    print("Kurulan: $scheduleDate");
+    final pending = await notificationsPlugin.pendingNotificationRequests();
+    print("Bekleyen bildirim sayısı: ${pending.length}");
+    /*
     try {
       print("--------------------------------------------------");
       print("🔔 [BİLDİRİM LOG] Kurulum Başladı...");
@@ -130,10 +169,20 @@ class NotificationServices {
     } catch (e) {
       print("❌ [BİLDİRİM SİSTEMSEL HATA] Kod patladı: $e");
       print("--------------------------------------------------");
-    }
+    }*/
   }
 
   Future<void> requestPermissions() async {
+    if (Platform.isAndroid) {
+      await Permission.notification.request();
+    }
+
+    var exactAlarmStatus = await Permission.scheduleExactAlarm.status;
+    if (exactAlarmStatus.isDenied) {
+      print("Exact alarm izin yok,isteniyor..");
+      await Permission.scheduleExactAlarm.request();
+    }
+    /*
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
@@ -159,13 +208,14 @@ class NotificationServices {
           "Exact alarm izni istenirken hata oluştu veya cihaz Android 12 altı: $e",
         );
       }
-    }
-    /*
-  Future<void> cancelNotification(int id) async {
-    await _notificationsPlugin.cancel(id: id);
+    }*/
   }
 
-  
-*/
+  Future<void> cancelNotification({required int id}) async {
+    try {
+      await notificationsPlugin.cancel(id: id);
+    } catch (e) {
+      print("Cancel Notifi Error: $e");
+    }
   }
 }

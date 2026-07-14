@@ -35,12 +35,22 @@ class EventList extends _$EventList {
     state = [...state, newEvent];
     _saveEvent(state);
 
+    final List<String> dateParts = date.split("/");
+    final List<String> timeParts = time.split(":");
+    final DateTime eventDate = DateTime(
+      int.parse(dateParts[2]),
+      int.parse(dateParts[1]),
+      int.parse(dateParts[0]),
+      int.parse(timeParts[0]),
+      int.parse(timeParts[1]),
+    );
     await NotificationServices().scheduleNotification(
       id: id,
       title: title,
       body: description,
-      dateStr: date,
-      timeStr: time,
+      dateTime: eventDate,
+      //dateStr: date,
+      //timeStr: time,
     );
   }
 

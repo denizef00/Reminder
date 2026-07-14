@@ -440,6 +440,23 @@ class _AddViewState extends ConsumerState<AddView> {
                                         dateEditing,
                                         timeEditing,
                                       );
+
+                                      final dateParts = timeEditing.split("/");
+                                      final timeParts = timeEditing.split(":");
+                                      final DateTime eventDate = DateTime(
+                                        int.parse(dateParts[2]),
+                                        int.parse(dateParts[1]),
+                                        int.parse(dateParts[0]),
+                                        int.parse(timeParts[0]),
+                                        int.parse(timeParts[1]),
+                                      );
+                                      NotificationServices()
+                                          .scheduleNotification(
+                                            id: 0,
+                                            title: nameEditing.text.trim(),
+                                            body: descEditing.text.trim(),
+                                            dateTime: eventDate,
+                                          );
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(

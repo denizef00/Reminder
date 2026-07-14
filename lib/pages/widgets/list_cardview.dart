@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/providers/event_provider.dart';
+import 'package:reminder/services/notification_services.dart';
 
 class ListCardview extends ConsumerWidget {
   final String id;
@@ -530,6 +531,9 @@ class ListCardview extends ConsumerWidget {
                     ),
                     IconButton(
                       onPressed: () {
+                        NotificationServices().cancelNotification(
+                          id: int.parse(id),
+                        );
                         Navigator.pop(dialogcontext);
                         onDeletePressed();
                       },
