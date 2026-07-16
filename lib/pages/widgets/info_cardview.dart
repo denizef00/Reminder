@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/providers/event_provider.dart';
+import 'package:reminder/services/notification_services.dart';
 
 class InfoCard {
   static void show(
@@ -240,6 +241,14 @@ class InfoCard {
                                                   dateEditing,
                                                   timeEditing,
                                                 );
+                                          NotificationServices()
+                                              .scheduleReminder(
+                                                id: 0,
+                                                title: nameEditing.text.trim(),
+                                                body: descEditing.text.trim(),
+                                                dateStr: dateEditing,
+                                                timeStr: timeEditing,
+                                              );
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
@@ -247,7 +256,9 @@ class InfoCard {
                                               content: Text(
                                                 'Event succesfully editted!!',
                                               ),
-                                              backgroundColor: Colors.redAccent,
+                                              backgroundColor: Theme.of(
+                                                context,
+                                              ).colorScheme.error,
                                               behavior:
                                                   SnackBarBehavior.floating,
                                               duration: Duration(seconds: 2),

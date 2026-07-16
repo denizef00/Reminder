@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reminder/pages/widgets/info_cardview.dart';
 import 'package:reminder/providers/gemini_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:reminder/services/notification_services.dart';
 
 class AddView extends ConsumerStatefulWidget {
   const AddView({super.key});
@@ -54,8 +53,15 @@ class _AddViewState extends ConsumerState<AddView> {
                           .read(geminiLoadingProvider.notifier)
                           .cancelOperation();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text('Operation canceled by user!'),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       );
                     },
@@ -197,6 +203,12 @@ class _AddViewState extends ConsumerState<AddView> {
                                         const SnackBar(
                                           content: Text(
                                             'Event successfully added to calendar!!',
+                                          backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+                duration: Duration(seconds: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                                           ),
                                         ),
                                       );
@@ -208,6 +220,12 @@ class _AddViewState extends ConsumerState<AddView> {
                                       content: Text(
                                         'Gemini could not parse the text.Please try again!!',
                                       ),
+                                      backgroundColor:Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+                duration: Duration(seconds: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                                     ),
                                   );
                                 }
@@ -215,6 +233,12 @@ class _AddViewState extends ConsumerState<AddView> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text("Please write something!!"),
+                                    backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+                duration: Duration(seconds: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                                   ),
                                 );
                               }*/
@@ -225,29 +249,6 @@ class _AddViewState extends ConsumerState<AddView> {
                             ),
                           ),
                         ),
-
-                        TextButton(
-                          onPressed: () {
-                            NotificationServices().showInstantNotification(
-                              id: 0,
-                              title: "Test",
-                              body: "TEST",
-                            );
-                          },
-                          child: Text("Send Notification"),
-                        ),
-                        /*
-                        TextButton(
-                          onPressed: () {
-                            NotificationServices().scheduleNotification(
-                              title: "Schedule Test",
-                              body: "SCHEDULE TEST",
-                              dateTime: DateTime(2026, 07, 14, 14, 03),
-                            );
-                            print('BILDIRIM KURULDU');
-                          },
-                          child: Text("Send Scheduled Notification"),
-                        ),*/
                       ],
                     ),
                   ),
