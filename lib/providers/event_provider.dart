@@ -18,6 +18,7 @@ class EventList extends _$EventList {
 
   final uuid = Uuid();
   void addEvent(
+    String id,
     String title,
     String description,
     String date,
@@ -25,7 +26,7 @@ class EventList extends _$EventList {
   ) async {
     //final int id = uuid.v4().hashCode;
     final newEvent = EventModel(
-      id: uuid.v4(),
+      id: id,
       title: title,
       description: description,
       date: date,

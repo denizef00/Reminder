@@ -13,7 +13,6 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   await NotificationServices().initNotification();
-  await NotificationServices().requestPermissions();
 
   ErrorWidget.builder = (FlutterErrorDetails details) {
     if (details.exceptionAsString().contains('overflowed')) {
