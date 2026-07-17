@@ -40,6 +40,7 @@ class _AddViewState extends ConsumerState<AddView> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
+                  /*
                   SizedBox(height: 16),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
@@ -73,7 +74,7 @@ class _AddViewState extends ConsumerState<AddView> {
                         fontSize: 20,
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             )
@@ -141,7 +142,7 @@ class _AddViewState extends ConsumerState<AddView> {
 
                               if (userText.isNotEmpty) {
                                 String id = uuid.v4();
-
+                                /*
                                 InfoCard.show(
                                   context,
                                   ref,
@@ -158,90 +159,84 @@ class _AddViewState extends ConsumerState<AddView> {
                                   buttonName1: "Cancel",
                                   buttonName2: "Accept",
                                   edittingMode: false,
-                                );
-                              }
-                              /*
-                              if (userText.isNotEmpty) {
-                                ref
-                                    .read(geminiLoadingProvider.notifier)
-                                    .setLoading(true);
+                                );*/
 
-                                final geminiService = ref.read(
-                                  geminiServiceProvider,
-                                );
-                                final Map<String, dynamic>? eventData =
-                                    await geminiService.parseTexttoEvent(
-                                      userText,
+                                if (userText.isNotEmpty) {
+                                  ref
+                                      .read(geminiLoadingProvider.notifier)
+                                      .setLoading(true);
+
+                                  final geminiService = ref.read(
+                                    geminiServiceProvider,
+                                  );
+                                  final Map<String, dynamic>? eventData =
+                                      await geminiService.parseTexttoEvent(
+                                        userText,
+                                      );
+
+                                  ref
+                                      .read(geminiLoadingProvider.notifier)
+                                      .setLoading(false);
+
+                                  if (eventData != null) {
+                                    InfoCard.show(
+                                      context,
+                                      ref,
+                                      id: id,
+                                      name:
+                                          eventData['eventName'] ?? 'New Event',
+                                      description:
+                                          eventData['description'] ?? '--',
+                                      date:
+                                          eventData['date'] ??
+                                          '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                                      time:
+                                          eventData['time'] ??
+                                          '${DateTime.now().hour}:${DateTime.now().minute}',
+                                      onCheckPressed: () {},
+                                      onDeletePressed: () {},
+                                      onConfirm: () {},
+                                      buttonName1: "Cancel",
+                                      buttonName2: "Accept",
+                                      edittingMode: false,
                                     );
-
-                                ref
-                                    .read(geminiLoadingProvider.notifier)
-                                    .setLoading(false);
-
-                                if (eventData != null) {
-
-                                  _infoCard(
-                                    context,
-                                    name: eventData['eventName'] ?? 'New Event',
-                                    description:
-                                        eventData['description'] ?? '--',
-                                    date:
-                                        eventData['date'] ??
-                                        '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                                    time:
-                                        eventData['time'] ??
-                                        '${DateTime.now().hour}:${DateTime.now().minute}',
-                                    onConfrim: (name, desc, date, time) {
-                                      ref
-                                          .read(eventListProvider.notifier)
-                                          .addEvent(name, desc, date, time);
-
-                                      _textController.clear();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Event successfully added to calendar!!',
-                                          backgroundColor: Theme.of(context).colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-                duration: Duration(seconds: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Gemini could not parse the text.Please try again!!',
+                                        ),
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                        behavior: SnackBarBehavior.floating,
+                                        duration: Duration(seconds: 2),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
                                         ),
-                                      );
-                                    },
-                                  );
+                                      ),
+                                    );
+                                  }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Gemini could not parse the text.Please try again!!',
+                                    SnackBar(
+                                      content: Text("Please write something!!"),
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: Duration(seconds: 2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                      backgroundColor:Theme.of(context).colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-                duration: Duration(seconds: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
                                     ),
                                   );
                                 }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("Please write something!!"),
-                                    backgroundColor: Theme.of(context).colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-                duration: Duration(seconds: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                                  ),
-                                );
-                              }*/
+
+                                _textController.clear();
+                              }
                             },
                             child: const Text(
                               "ADD EVENT",

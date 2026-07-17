@@ -65,7 +65,7 @@ class NotificationServices {
 
     TZDateTime eventDate = TZDateTime(local, year, month, day, hour, minute);
 
-    TZDateTime scheduledDate = eventDate.subtract(Duration(minutes: 1));
+    TZDateTime scheduledDate = eventDate.subtract(Duration(minutes: 5));
 
     print('==============Bildirim Kuruldu==============');
     print('Event Title: ${title}');
@@ -92,7 +92,7 @@ class NotificationServices {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 }
