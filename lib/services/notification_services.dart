@@ -1,4 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reminder/providers/notificationOffset_provider.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
 
@@ -45,13 +47,16 @@ class NotificationServices {
     );
   }
 
-  Future<void> scheduleReminder({
+  Future<void> scheduleReminder(
+    WidgetRef ref, {
     required int id,
     required String title,
     required String body,
     required String dateStr,
     required String timeStr,
   }) async {
+    final offsetMinute = ref.read(notificationOffsetNotifier);
+
     final dateParts = dateStr.split("/");
     final timeParts = timeStr.split(":");
 
@@ -65,14 +70,18 @@ class NotificationServices {
 
     TZDateTime eventDate = TZDateTime(local, year, month, day, hour, minute);
 
-    TZDateTime scheduledDate = eventDate.subtract(Duration(minutes: 5));
+    TZDateTime scheduledDate = eventDate.subtract(
+      Duration(minutes: offsetMinute),
+    );
 
     print('==============Bildirim Kuruldu==============');
     print('Event Title: ${title}');
     print('Event Body: ${body}');
     print('Local: ${local}');
     print('Schedule Time: ${scheduledDate}');
+    print('Offset Minute : ${offsetMinute}');
     print('Event Date : ${eventDate}');
+
     print('Now: ${TZDateTime.now(local)}');
     print('============================================');
 
@@ -92,7 +101,7 @@ class NotificationServices {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
 }

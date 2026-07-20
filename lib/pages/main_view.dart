@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
-//import 'package:reminder/pages/widgets/reminder_settingsview.dart';
+import 'package:reminder/pages/widgets/reminder_settingsview.dart';
 import 'package:reminder/providers/theme_provider.dart';
+import 'package:reminder/providers/notificationOffset_provider.dart';
 
 final notificationOffsetProvider = StateProvider<int>((ref) => 1);
 
@@ -114,12 +115,12 @@ class MainScreen extends ConsumerWidget {
   }
 
   void _settingsCard(BuildContext context, WidgetRef ref) {
-    //final selectedOffset = ref.watch(notificationOffsetProvider);
+    final selectedOffset = ref.watch(notificationOffsetProvider);
     showDialog(
       context: context,
       builder: (BuildContext dialogcontext) {
         return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setPopUpState) {
+          builder: (BuildContext builderContext, StateSetter setPopUpState) {
             return AlertDialog(
               contentPadding: EdgeInsets.zero,
               insetPadding: const EdgeInsets.symmetric(horizontal: 15),
@@ -147,32 +148,21 @@ class MainScreen extends ConsumerWidget {
                           ],
                         ),
                         SizedBox(height: 10),
-                        /*
+
                         Row(
                           children: [
                             Text('Notification Time : '),
-                            SizedBox(width: 10),
+                            SizedBox(width: 8),
 
-                            Container(
+                            SizedBox(
                               width: 160,
                               height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                              ),
-                              child: ReminderSettings(
-                                initialValue: selectedOffset,
-                                onTimeSelected: (value) {
-                                  ref
-                                          .read(
-                                            notificationOffsetProvider.notifier,
-                                          )
-                                          .state =
-                                      value;
-                                },
-                              ),
+
+                              child: ReminderSettings(),
                             ),
                           ],
                         ),
+
                         SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -262,7 +252,7 @@ class MainScreen extends ConsumerWidget {
                               ),
                             ),
                           ],
-                        ),*/
+                        ),
                       ],
                     ),
                   ],

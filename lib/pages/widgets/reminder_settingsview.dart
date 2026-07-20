@@ -1,59 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reminder/providers/notificationOffset_provider.dart';
 
-class ReminderSettings extends StatefulWidget {
-  final ValueChanged<int> onTimeSelected;
-  final int initialValue;
+class ReminderSettings extends ConsumerWidget {
+  const ReminderSettings({super.key});
 
-  const ReminderSettings({
-    Key? key,
-    required this.onTimeSelected,
-    this.initialValue = 15, // Varsayılan değer yine 15
-  }) : super(key: key);
-
-  @override
-  State<ReminderSettings> createState() => _ReminderSettingsState();
-}
-
-class _ReminderSettingsState extends State<ReminderSettings> {
-  int _selectedOffset = 1;
-  final Map<String, int> _timeOptions = {
-    '1 minute ago ': 1,
-    '5 minute ago ': 5,
-    '10 minute ago ': 10,
-    '1 hour ago ': 60,
-    '1 day ago ': 1440,
+  static const Map<String, int> _timeOptions = {
+    '1 minute ago': 1,
+    '5 minute ago': 5,
+    '10 minute ago': 10,
+    '1 hour ago': 60,
+    '1 day ago': 1440,
   };
-  @override
-  void initState() {
-    super.initState();
-    _selectedOffset = widget.initialValue;
-  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedOffset = ref.watch(notificationOffsetNotifier);
+
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
 
+      child: Row(
         children: [
           DropdownButton<int>(
-            value: _selectedOffset,
-            icon: Icon(
+            value: _timeOptions.containsValue(selectedOffset)
+                ? selectedOffset
+                : _timeOptions.values.first,
+            icon: const Icon(
               Icons.arrow_drop_down_circle_outlined,
               color: Colors.blue,
             ),
-            underline: SizedBox(),
+            underline: const SizedBox(),
             onChanged: (int? newValue) {
               if (newValue != null) {
-                setState(() {
-                  _selectedOffset = newValue;
-                });
-                print("Seçilen Süre (Dakika): $_selectedOffset");
+                ref
+                    .read(notificationOffsetNotifier.notifier)
+                    .updateOffset(newValue);
               }
             },
             items: _timeOptions.entries.map((entry) {

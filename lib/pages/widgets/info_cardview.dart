@@ -36,287 +36,293 @@ class InfoCard {
               insetPadding: const EdgeInsets.symmetric(horizontal: 15),
               backgroundColor: Colors.transparent,
               elevation: 8,
-              content: Container(
-                padding: EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
-                child: Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Event Preview",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.tertiary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 25),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
+              content: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildPopUpTextField(
-                                label: "Event Name",
-                                controller: nameEditing,
-                                colors: Theme.of(context).colorScheme,
-                              ),
-                              SizedBox(height: 25),
-                              _buildPopUpTextField(
-                                label: "Event Description",
-                                controller: descEditing,
-                                colors: Theme.of(context).colorScheme,
-                              ),
-                              SizedBox(height: 25),
-
-                              _buildPopUpClickebleField(
-                                label: "Event Date",
-                                value: dateEditing,
-                                icon: Icons.calendar_today_outlined,
-                                color: Theme.of(context).colorScheme,
-                                onTap: () async {
-                                  DateTime? pickedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2025),
-                                    lastDate: DateTime(2030),
-                                    locale: const Locale('en', 'GB'),
-                                  );
-                                  if (pickedDate != null) {
-                                    setPopUpState(() {
-                                      dateEditing =
-                                          "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
-                                    });
-                                  }
-                                },
-                              ),
-
-                              SizedBox(height: 25),
-                              _buildPopUpClickebleField(
-                                label: "Event Time",
-                                icon: Icons.access_time_rounded,
-                                value: timeEditing,
-                                color: Theme.of(context).colorScheme,
-                                onTap: () async {
-                                  TimeOfDay? pickedTime = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay.now(),
-                                    initialEntryMode:
-                                        TimePickerEntryMode.inputOnly,
-                                    builder:
-                                        (
-                                          BuildContext timecontext,
-                                          Widget? child,
-                                        ) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              textSelectionTheme:
-                                                  TextSelectionThemeData(
-                                                    cursorColor: Theme.of(
-                                                      context,
-                                                    ).colorScheme.tertiary,
-                                                    selectionColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .tertiary
-                                                            .withOpacity(0.3),
-                                                    selectionHandleColor:
-                                                        Theme.of(
-                                                          context,
-                                                        ).colorScheme.tertiary,
-                                                  ),
-
-                                              colorScheme: Theme.of(context)
-                                                  .colorScheme
-                                                  .copyWith(
-                                                    onSurface: Theme.of(
-                                                      context,
-                                                    ).colorScheme.tertiary,
-                                                  ),
-                                            ),
-                                            child: MediaQuery(
-                                              data: MediaQuery.of(timecontext)
-                                                  .copyWith(
-                                                    alwaysUse24HourFormat: true,
-                                                  ),
-                                              child: child!,
-                                            ),
-                                          );
-                                        },
-                                  );
-                                  if (pickedTime != null) {
-                                    setPopUpState(() {
-                                      timeEditing =
-                                          "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
-                                    });
-                                    String newTime =
-                                        "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
-                                    ref
-                                        .read(eventListProvider.notifier)
-                                        .updateEventTime(id, newTime);
-                                  }
-                                },
-                              ),
-
-                              SizedBox(height: 25),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface,
-                                          foregroundColor: Theme.of(
-                                            context,
-                                          ).colorScheme.onSecondary,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 10,
-                                          ),
-                                          child: Text(
-                                            buttonName1,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 5,
-                                          ),
-                                          minimumSize: Size(50, 50),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadiusGeometry.circular(
-                                                  24,
-                                                ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          edittingMode
-                                              ? _updateEvent(
-                                                  ref,
-                                                  id,
-                                                  nameEditing,
-                                                  descEditing,
-                                                  dateEditing,
-                                                  timeEditing,
-                                                )
-                                              : _newEvent(
-                                                  ref,
-                                                  id,
-                                                  nameEditing,
-                                                  descEditing,
-                                                  dateEditing,
-                                                  timeEditing,
-                                                );
-                                          NotificationServices()
-                                              .scheduleReminder(
-                                                id: 0,
-                                                title: nameEditing.text.trim(),
-                                                body: descEditing.text.trim(),
-                                                dateStr: dateEditing,
-                                                timeStr: timeEditing,
-                                              );
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Event succesfully editted!!',
-                                              ),
-                                              backgroundColor: Theme.of(
-                                                context,
-                                              ).colorScheme.error,
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              duration: Duration(seconds: 2),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 10,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.check_circle_outlined,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(width: 2),
-                                              Text(
-                                                buttonName2,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                              Text(
+                                "Event Preview",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    if (edittingMode)
-                      IconButton(
-                        onPressed: () {
-                          /*
-                        NotificationServices().cancelNotification(
-                          id: int.parse(id),
-                        );*/
-                          Navigator.pop(context);
-                          onDeletePressed();
-                        },
-                        icon: const Icon(Icons.delete_outline_rounded),
-                        color: Theme.of(context).colorScheme.error,
+                          SizedBox(height: 25),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildPopUpTextField(
+                                  label: "Event Name",
+                                  controller: nameEditing,
+                                  colors: Theme.of(context).colorScheme,
+                                ),
+                                SizedBox(height: 25),
+                                _buildPopUpTextField(
+                                  label: "Event Description",
+                                  controller: descEditing,
+                                  colors: Theme.of(context).colorScheme,
+                                ),
+                                SizedBox(height: 25),
+
+                                _buildPopUpClickebleField(
+                                  label: "Event Date",
+                                  value: dateEditing,
+                                  icon: Icons.calendar_today_outlined,
+                                  color: Theme.of(context).colorScheme,
+                                  onTap: () async {
+                                    DateTime? pickedDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2025),
+                                      lastDate: DateTime(2030),
+                                      locale: const Locale('en', 'GB'),
+                                    );
+                                    if (pickedDate != null) {
+                                      setPopUpState(() {
+                                        dateEditing =
+                                            "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+                                      });
+                                    }
+                                  },
+                                ),
+
+                                SizedBox(height: 25),
+                                _buildPopUpClickebleField(
+                                  label: "Event Time",
+                                  icon: Icons.access_time_rounded,
+                                  value: timeEditing,
+                                  color: Theme.of(context).colorScheme,
+                                  onTap: () async {
+                                    TimeOfDay?
+                                    pickedTime = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                      initialEntryMode:
+                                          TimePickerEntryMode.inputOnly,
+                                      builder:
+                                          (
+                                            BuildContext timecontext,
+                                            Widget? child,
+                                          ) {
+                                            return Theme(
+                                              data: Theme.of(context).copyWith(
+                                                textSelectionTheme:
+                                                    TextSelectionThemeData(
+                                                      cursorColor: Theme.of(
+                                                        context,
+                                                      ).colorScheme.tertiary,
+                                                      selectionColor:
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .tertiary
+                                                              .withOpacity(0.3),
+                                                      selectionHandleColor:
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .tertiary,
+                                                    ),
+
+                                                colorScheme: Theme.of(context)
+                                                    .colorScheme
+                                                    .copyWith(
+                                                      onSurface: Theme.of(
+                                                        context,
+                                                      ).colorScheme.tertiary,
+                                                    ),
+                                              ),
+                                              child: MediaQuery(
+                                                data: MediaQuery.of(timecontext)
+                                                    .copyWith(
+                                                      alwaysUse24HourFormat:
+                                                          true,
+                                                    ),
+                                                child: child!,
+                                              ),
+                                            );
+                                          },
+                                    );
+                                    if (pickedTime != null) {
+                                      setPopUpState(() {
+                                        timeEditing =
+                                            "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+                                      });
+                                      String newTime =
+                                          "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+                                      ref
+                                          .read(eventListProvider.notifier)
+                                          .updateEventTime(id, newTime);
+                                    }
+                                  },
+                                ),
+
+                                SizedBox(height: 25),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                            foregroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.onSecondary,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 10,
+                                            ),
+                                            child: Text(
+                                              buttonName1,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 5,
+                                            ),
+                                            minimumSize: Size(50, 50),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadiusGeometry.circular(
+                                                    24,
+                                                  ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            edittingMode
+                                                ? _updateEvent(
+                                                    ref,
+                                                    id,
+                                                    nameEditing,
+                                                    descEditing,
+                                                    dateEditing,
+                                                    timeEditing,
+                                                  )
+                                                : _newEvent(
+                                                    ref,
+                                                    id,
+                                                    nameEditing,
+                                                    descEditing,
+                                                    dateEditing,
+                                                    timeEditing,
+                                                  );
+                                            NotificationServices()
+                                                .scheduleReminder(
+                                                  ref,
+                                                  id: 0,
+                                                  title: nameEditing.text
+                                                      .trim(),
+                                                  body: descEditing.text.trim(),
+                                                  dateStr: dateEditing,
+                                                  timeStr: timeEditing,
+                                                );
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Event succesfully editted!!',
+                                                ),
+                                                backgroundColor: Theme.of(
+                                                  context,
+                                                ).colorScheme.error,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                duration: Duration(seconds: 2),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.check_circle_outlined,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(width: 2),
+                                                Text(
+                                                  buttonName2,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                  ],
+                      if (edittingMode)
+                        IconButton(
+                          onPressed: () {
+                            /*
+                          NotificationServices().cancelNotification(
+                            id: int.parse(id),
+                          );*/
+                            Navigator.pop(context);
+                            onDeletePressed();
+                          },
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             );
