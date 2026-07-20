@@ -51,7 +51,6 @@ class NotificationServices {
     WidgetRef ref, {
     required int id,
     required String title,
-    required String body,
     required String dateStr,
     required String timeStr,
   }) async {
@@ -75,8 +74,7 @@ class NotificationServices {
     );
 
     print('==============Bildirim Kuruldu==============');
-    print('Event Title: ${title}');
-    print('Event Body: ${body}');
+    print('Event Title: $title');
     print('Local: ${local}');
     print('Schedule Time: ${scheduledDate}');
     print('Offset Minute : ${offsetMinute}');
@@ -88,7 +86,7 @@ class NotificationServices {
     await notificationsPlugin.zonedSchedule(
       id: id,
       title: title,
-      body: body,
+      body: 'Upcoming Event: $title',
       scheduledDate: scheduledDate,
 
       notificationDetails: const NotificationDetails(
@@ -101,7 +99,7 @@ class NotificationServices {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reminder/pages/widgets/reminder_settingsview.dart';
 import 'package:reminder/providers/event_provider.dart';
+import 'package:reminder/providers/notificationOffset_provider.dart';
 import 'package:reminder/services/notification_services.dart';
 
 class InfoCard {
@@ -19,6 +21,13 @@ class InfoCard {
     required String buttonName2,
     required bool edittingMode,
   }) {
+    final offsetMinute = ref.read(notificationOffsetNotifier);
+    final selectedText = ReminderSettings.timeOptions.entries
+        .firstWhere(
+          (entry) => entry.value == offsetMinute,
+          orElse: () => const MapEntry('Bilinmeyen Süre', 0),
+        )
+        .key;
     TextEditingController nameEditing = TextEditingController(text: name);
     TextEditingController descEditing = TextEditingController(
       text: description,
@@ -250,7 +259,6 @@ class InfoCard {
                                                   id: 0,
                                                   title: nameEditing.text
                                                       .trim(),
-                                                  body: descEditing.text.trim(),
                                                   dateStr: dateEditing,
                                                   timeStr: timeEditing,
                                                 );
@@ -303,18 +311,32 @@ class InfoCard {
                                     ],
                                   ),
                                 ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      selectedText,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.tertiary,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Icon(Icons.timelapse),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
+
                       if (edittingMode)
                         IconButton(
                           onPressed: () {
-                            /*
-                          NotificationServices().cancelNotification(
-                            id: int.parse(id),
-                          );*/
                             Navigator.pop(context);
                             onDeletePressed();
                           },

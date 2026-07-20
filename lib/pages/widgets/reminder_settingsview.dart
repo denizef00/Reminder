@@ -5,7 +5,7 @@ import 'package:reminder/providers/notificationOffset_provider.dart';
 class ReminderSettings extends ConsumerWidget {
   const ReminderSettings({super.key});
 
-  static const Map<String, int> _timeOptions = {
+  static const Map<String, int> timeOptions = {
     '1 minute ago': 1,
     '5 minute ago': 5,
     '10 minute ago': 10,
@@ -27,9 +27,9 @@ class ReminderSettings extends ConsumerWidget {
       child: Row(
         children: [
           DropdownButton<int>(
-            value: _timeOptions.containsValue(selectedOffset)
+            value: timeOptions.containsValue(selectedOffset)
                 ? selectedOffset
-                : _timeOptions.values.first,
+                : timeOptions.values.first,
             icon: const Icon(
               Icons.arrow_drop_down_circle_outlined,
               color: Colors.blue,
@@ -42,7 +42,7 @@ class ReminderSettings extends ConsumerWidget {
                     .updateOffset(newValue);
               }
             },
-            items: _timeOptions.entries.map((entry) {
+            items: timeOptions.entries.map((entry) {
               return DropdownMenuItem<int>(
                 value: entry.value,
                 child: Text(entry.key),

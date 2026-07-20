@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reminder/pages/widgets/reminder_settingsview.dart';
 import 'package:reminder/providers/theme_provider.dart';
-import 'package:reminder/providers/notificationOffset_provider.dart';
-
-final notificationOffsetProvider = StateProvider<int>((ref) => 1);
 
 class MainScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -115,7 +111,6 @@ class MainScreen extends ConsumerWidget {
   }
 
   void _settingsCard(BuildContext context, WidgetRef ref) {
-    final selectedOffset = ref.watch(notificationOffsetProvider);
     showDialog(
       context: context,
       builder: (BuildContext dialogcontext) {
