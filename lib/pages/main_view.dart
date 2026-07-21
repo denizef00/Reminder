@@ -147,10 +147,10 @@ class MainScreen extends ConsumerWidget {
                         Row(
                           children: [
                             Text('Notification Time : '),
-                            SizedBox(width: 8),
+                            SizedBox(width: 20),
 
                             SizedBox(
-                              width: 160,
+                              width: 140,
                               height: 40,
 
                               child: ReminderSettings(),

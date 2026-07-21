@@ -30,6 +30,7 @@ class ReminderSettings extends ConsumerWidget {
             value: timeOptions.containsValue(selectedOffset)
                 ? selectedOffset
                 : timeOptions.values.first,
+
             icon: const Icon(
               Icons.arrow_drop_down_circle_outlined,
               color: Colors.blue,

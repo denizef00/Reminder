@@ -158,12 +158,16 @@ class InfoCard {
                                                       ).colorScheme.tertiary,
                                                     ),
                                               ),
+
                                               child: MediaQuery(
                                                 data: MediaQuery.of(timecontext)
                                                     .copyWith(
                                                       alwaysUse24HourFormat:
                                                           true,
+                                                      textScaler:
+                                                          TextScaler.noScaling,
                                                     ),
+
                                                 child: child!,
                                               ),
                                             );
@@ -454,7 +458,7 @@ Widget _buildPopUpClickebleField({
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            color: color.surface, // Senin Slate arka plan rengin
+            color: color.surface,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -468,7 +472,7 @@ Widget _buildPopUpClickebleField({
                   color: color.tertiary,
                 ),
               ),
-              Icon(icon, size: 18, color: color.primary), // Senin Indigo ikonun
+              Icon(icon, size: 18, color: color.primary),
             ],
           ),
         ),
